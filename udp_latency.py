@@ -219,9 +219,11 @@ class Server:
             "bandwidth": bandwidth,
         }
 
-    def save(self, path):
+    def save(self, path, sync):
         with open(path, "w") as f:
             writer = csv.writer(f, delimiter=",")
+            if sync:
+                writer.writerow(["sync", self.OFFSET])
             content = [["index", "latency", "jitter", "recv-time", "recv-size"]]
             writer.writerows(content + self.log)
 
@@ -284,4 +286,4 @@ if __name__ == "__main__":
         )
         server.evaluate()
         if "--save" in opts.keys():
-            server.save(opts["--save"])
+            server.save(opts["--save"], opts["--sync"])
